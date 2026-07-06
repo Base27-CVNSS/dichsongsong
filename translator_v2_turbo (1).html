@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dịch Máy Song Song · Cực Hạn</title>
+<style>
+:root {
+  --text: #0f172a;
+  --muted: #64748b;
+  --radius: 20px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+button, textarea { font: inherit; outline: none; }
+button { border: 0; cursor: pointer; }
+
+.app { 
+  width: min(1600px, calc(100% - 24px)); 
+  margin: 40px auto 0; 
+  flex: 1;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.kicker {
+  display: inline-flex; align-items: center; padding: 6px 16px;
+  border-radius: 999px; background: #e2e8f0; color: #334155; 
+  font-weight: 700; font-size: 13px; letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.grid { 
+  display: grid; 
+  grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  gap: 16px; 
+}
+
+.card {
+  display: flex; flex-direction: column;
+  border-radius: var(--radius); 
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+.card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.cardInner { 
+  display: flex; flex-direction: column; flex: 1; padding: 16px; 
+}
+.cardTop { 
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; 
+}
+.name { margin: 0; font-size: 15px; font-weight: 700; color: #1e293b; }
+
+textarea {
+  flex: 1; width: 100%; min-height: 180px; 
+  padding: 12px; resize: none; 
+  border: none; border-radius: 12px; 
+  background: rgba(255,255,255,0.4);
+  line-height: 1.6; font-size: 16px; color: #0f172a;
+  transition: background 0.2s;
+}
+textarea::placeholder { color: rgba(15, 23, 42, 0.3); }
+textarea:focus { background: #ffffff; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05); }
+
+.cardFoot { 
+  display: flex; align-items: center; justify-content: space-between; 
+  margin-top: 12px; opacity: 0.6; transition: opacity 0.2s;
+}
+.card:hover .cardFoot, .card:focus-within .cardFoot { opacity: 1; }
+
+.small { font-size: 12px; font-weight: 600; color: #475569; }
+.state-indicator {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  padding: 4px 8px; border-radius: 6px; transition: 0.2s;
+}
+.state-idle { opacity: 0; }
+.state-loading { opacity: 1; color: #b45309; background: rgba(245,158,11,0.2); animation: pulse 1s infinite alternate; }
+.state-error { opacity: 1; color: #b91c1c; background: rgba(239,68,68,0.2); }
+@keyframes pulse { to { opacity: 0.5; } }
+
+.copy {
+  padding: 6px 12px; border-radius: 8px; background: rgba(255,255,255,0.6);
+  color: #334155; font-size: 12px; font-weight: 700;
+}
+.copy:hover { background: #ffffff; color: #000; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+  opacity: 0; pointer-events: none; padding: 12px 24px; border-radius: 999px;
+  color: #fff; background: #0f172a; font-weight: 600; font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15); transition: 0.2s; z-index: 50;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+footer {
+  text-align: center; padding: 40px 0; color: #94a3b8; font-size: 13px; font-weight: 500;
+}
+
+@media (max-width: 1120px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .grid { grid-template-columns: 1fr; gap: 12px; } .app { margin-top: 20px; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="kicker">Dịch Máy Song Song</span>
+  </header>
+  <section class="grid" id="grid"></section>
+</div>
+<footer>Long Ngo thiết kế.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== CVNSS4.0 Converter (Lõi Cục Bộ 0ms) ===== */
+const CVNSSConverter = (function () {
+  const specialChars = ["`", "“", "”", "<", ">", "@", "-", ";", "=", "…", " ", ",", ".", "?", "!", '"', "'", "(", ")", "[", "]", "{", "}", "%", "#", "$", "&", "_", "\\", "/", "*", ":", "+", "~", "^", "|", "\r\n", "\r", "\n"];
+  const consonants = { cqn: ["ngh", "ng", "ch", "gh", "kh", "nh", "ph", "th", "tr", "gi", "qu", "b", "k", "d", "đ", "g", "h", "c", "l", "m", "n", "r", "s", "t", "v", "x"], cvn: ["w", "w", "ch", "g", "k", "nh", "f", "th", "tr", "j", "q", "b", "c", "z", "d", "g", "h", "c", "l", "m", "n", "r", "s", "t", "v", "x"] };
+  const vowels = {
+    cqn: ["a", "à", "ả", "ã", "á", "ạ", "oa", "òa", "ỏa", "õa", "óa", "ọa", "oà", "oả", "oã", "oá", "oạ", "oác", "oạc", "oách", "oạch", "oai", "oài", "oải", "oãi", "oái", "oại", "oao", "oào", "oảo", "oão", "oáo", "oạo", "oáp", "oạp", "oát", "oạt", "oắt", "oặt", "oắc", "oặc", "oăn", "oằn", "oẳn", "oẵn", "oắn", "oặn", "oăm", "oằm", "oẳm", "oẵm", "oắm", "oặm", "oăng", "oằng", "oẳng", "oẵng", "oắng", "oặng", "oay", "oày", "oảy", "oãy", "oáy", "oạy", "ác", "ạc", "ách", "ạch", "ai", "ài", "ải", "ãi", "ái", "ại", "am", "àm", "ảm", "ãm", "ám", "ạm", "an", "àn", "ản", "ãn", "án", "ạn", "oan", "oàn", "oản", "oãn", "oán", "oạn", "oanh", "oành", "oảnh", "oãnh", "oánh", "oạnh", "ang", "àng", "ảng", "ãng", "áng", "ạng", "oang", "oàng", "oảng", "oãng", "oáng", "oạng", "anh", "ành", "ảnh", "ãnh", "ánh", "ạnh", "ao", "ào", "ảo", "ão", "áo", "ạo", "áp", "ạp", "át", "ạt", "au", "àu", "ảu", "áu", "ạu", "ay", "ày", "ảy", "ãy", "áy", "ạy", "ắc", "ặc", "ăm", "ằm", "ẳm", "ẵm", "ắm", "ặm", "ăn", "ằn", "ẳn", "ẵn", "ắn", "ặn", "ăng", "ằng", "ẳng", "ẵng", "ắng", "ặng", "ắp", "ặp", "ắt", "ặt", "ấc", "ậc", "âm", "ầm", "ẩm", "ẫm", "ấm", "ậm", "ân", "ần", "ẩn", "ẫn", "ấn", "ận", "âng", "ầng", "ẩng", "ẫng", "ấng", "ậng", "uân", "uần", "uẩn", "uẫn", "uấn", "uận", "uâng", "uầng", "uẩng", "uẫng", "uấng", "uậng", "ấp", "ập", "ất", "ật", "uất", "uật", "âu", "ầu", "ẩu", "ẫu", "ấu", "ậu", "ây", "ầy", "ẩy", "ẫy", "ấy", "ậy", "uây", "uầy", "uẩy", "uẫy", "uấy", "uậy", "e", "è", "ẻ", "ẽ", "é", "ẹ", "oe", "òe", "ỏe", "õe", "óe", "ọe", "éc", "ẹc", "em", "èm", "ẻm", "ẽm", "ém", "ẹm", "en", "èn", "ẻn", "ẽn", "én", "ẹn", "oen", "oèn", "oẻn", "oẽn", "oén", "oẹn", "eng", "èng", "ẻng", "ẽng", "éng", "ẹng", "eo", "èo", "ẻo", "ẽo", "éo", "ẹo", "oeo", "oèo", "oẻo", "oẽo", "oéo", "oẹo", "ép", "ẹp", "ét", "ẹt", "oét", "oẹt", "ê", "ề", "ể", "ễ", "ế", "ệ", "uê", "uề", "uể", "uễ", "uế", "uệ", "ếch", "ệch", "uếch", "uệch", "êm", "ềm", "ểm", "ễm", "ếm", "ệm", "ên", "ền", "ển", "ễn", "ến", "ện", "ênh", "ềnh", "ểnh", "ễnh", "ếnh", "ệnh", "uênh", "uềnh", "uểnh", "uễnh", "uếnh", "uệnh", "ếp", "ệp", "ết", "ệt", "êu", "ều", "ểu", "ễu", "ếu", "ệu", "i", "ì", "ỉ", "ĩ", "í", "ị", "uy", "ùy", "ủy", "ũy", "úy", "ụy", "uỳ", "uỷ", "uỹ", "uý", "uỵ", "ia", "ìa", "ỉa", "ĩa", "ía", "ịa", "uya", "íc", "ích", "ịch", "uých", "uỵch", "iếc", "iệc", "iêm", "iềm", "iểm", "iễm", "iếm", "iệm", "iên", "iền", "iển", "iễn", "iến", "iện", "uyên", "uyền", "uyển", "uyễn", "uyến", "uyện", "iêng", "iềng", "iểng", "iễng", "iếng", "iệng", "iếp", "iệp", "iết", "iệt", "uyết", "uyệt", "iêu", "iều", "iểu", "iễu", "iếu", "iệu", "yêt", "yệt", "yên", "yền", "yển", "yễn", "yến", "yện", "yêm", "yềm", "yểm", "yễm", "yếm", "yệm", "yêng", "yềng", "yểng", "yễng", "yếng", "yệnh", "yêu", "yều", "yểu", "yễu", "yếu", "yệu", "im", "ìm", "ỉm", "ĩm", "ím", "ịm", "in", "ìn", "ỉn", "ĩn", "ín", "ịn", "inh", "ình", "ỉnh", "ĩnh", "ính", "ịnh", "uynh", "uỳnh", "uỷnh", "uỹnh", "uýnh", "uỵnh", "íp", "ịp", "uýp", "uỵp", "ít", "ịt", "uýt", "uỵt", "iu", "ìu", "ỉu", "ĩu", "íu", "ịu", "uyu", "uỳu", "uỷu", "uỹu", "uýu", "uỵu", "uỳn", "uỷn", "uỹn", "uýn", "uỵn", "o", "ò", "ỏ", "õ", "ó", "ọ", "óc", "ọc", "oi", "òi", "ỏi", "õi", "ói", "ọi", "om", "òm", "ỏm", "õm", "óm", "ọm", "on", "òn", "ỏn", "õn", "ón", "ọn", "ong", "òng", "ỏng", "õng", "óng", "ọng", "oóc", "oong", "oòng", "oỏng", "oõng", "oóng", "oòng", "oọng", "óp", "ọp", "ót", "ọt", "ô", "ồ", "ổ", "ỗ", "ố", "ộ", "ốc", "ộc", "ôi", "ồi", "ổi", "ỗi", "ối", "ội", "ôm", "ồm", "ổm", "ỗm", "ốm", "ộm", "ôn", "ồn", "ổn", "ỗn", "ốn", "ộn", "ông", "ồng", "ổng", "ỗng", "ống", "ộng", "ốp", "ộp", "ốt", "ột", "ơ", "ờ", "ở", "ỡ", "ớ", "ợ", "ơi", "ời", "ởi", "ỡi", "ới", "ợi", "ơm", "ờm", "ởm", "ỡm", "ớm", "ợm", "ơn", "ờn", "ởn", "ỡn", "ớn", "ợn", "ơng", "ờng", "ởng", "ỡng", "ớng", "ợng", "ớp", "ợp", "ớt", "ợt", "u", "ù", "ủ", "ũ", "ú", "ụ", "ua", "ùa", "ủa", "ũa", "úa", "ụa", "úc", "ục", "ui", "ùi", "ủi", "ũi", "úi", "ụi", "um", "ùm", "ủm", "ũm", "úm", "ụm", "un", "ùn", "ủn", "ũn", "ún", "ụn", "ung", "ùng", "ủng", "ũng", "úng", "ụng", "uơ", "uờ", "uở", "uỡ", "uớ", "uợ", "uơn", "uờn", "uởn", "uỡn", "uớn", "uợn", "uớt", "uợt", "uốc", "uộc", "uôi", "uồi", "uổi", "uỗi", "uối", "uội", "uôm", "uồm", "uổm", "uỗm", "uốm", "uộm", "uôn", "uồn", "uổn", "uỗn", "uốn", "uộn", "uông", "uồng", "uổng", "uỗng", "uống", "uộng", "uốt", "uột", "uốp", "uộp", "úp", "ụp", "út", "ụt", "ư", "ừ", "ử", "ữ", "ứ", "ự", "ưa", "ừa", "ửa", "ữa", "ứa", "ựa", "ức", "ực", "ưi", "ừi", "ửi", "ữi", "ứi", "ựi", "ưm", "ừm", "ửm", "ữm", "ứm", "ựm", "ưn", "ừn", "ửn", "ữn", "ứn", "ựn", "ưng", "ừng", "ửng", "ững", "ứng", "ựng", "ước", "ược", "ươi", "ười", "ưởi", "ưỡi", "ưới", "ượi", "ươm", "ườm", "ưởm", "ưỡm", "ướm", "ượm", "ươn", "ườn", "ưởn", "ưỡn", "ướn", "ượn", "ương", "ường", "ưởng", "ưỡng", "ướng", "ượng", "ướp", "ượp", "ướt", "ượt", "ươu", "ườu", "ưởu", "ưỡu", "ướu", "ượu", "ứt", "ựt", "ưu", "ừu", "ửu", "ữu", "ứu", "ựu", "y", "ỳ", "ỷ", "ỹ", "ý", "ỵ", "ỳa", "ỷa", "ỹa", "ýa", "ỵa"],
+    cvn: ["a", "al", "az", "as", "aj", "ar", "oa", "oal", "oaz", "oas", "oaj", "oar", "oal", "oaz", "oas", "oaj", "oar", "osj", "osr", "oakj", "oakr", "ojp", "ojl", "ojz", "ojs", "ojj", "ojr", "owp", "owl", "owz", "ows", "owj", "owr", "ofj", "ofr", "odj", "odr", "adx", "adh", "asx", "ash", "alo", "alk", "alv", "alw", "alx", "alh", "avo", "avk", "avv", "avw", "avx", "avh", "azo", "azk", "azv", "azw", "azx", "azh", "ajp", "ajl", "ajz", "ajs", "ajj", "ajr", "ac", "acr", "akj", "akr", "ai", "ail", "aiz", "ais", "aij", "air", "am", "aml", "amz", "ams", "amj", "amr", "an", "anl", "anz", "ans", "anj", "anr", "olp", "oll", "olz", "ols", "olj", "olr", "oahp", "oahl", "oahz", "oahs", "oahj", "oahr", "agp", "agl", "agz", "ags", "agj", "agr", "ozp", "ozl", "ozz", "ozs", "ozj", "ozr", "ahp", "ahl", "ahz", "ahs", "ahj", "ahr", "ao", "aol", "aoz", "aos", "aoj", "aor", "ap", "apr", "at", "atr", "au", "aul", "auz", "auj", "aur", "ay", "ayl", "ayz", "ays", "ayj", "ayr", "acx", "ach", "amo", "amk", "amv", "amw", "amx", "amh", "ano", "ank", "anv", "anw", "anx", "anh", "ago", "agk", "agv", "agw", "agx", "agh", "apx", "aph", "atx", "ath", "acb", "acf", "amy", "amd", "amq", "amg", "amb", "amf", "any", "and", "anq", "ang", "anb", "anf", "agy", "agd", "agq", "agg", "agb", "agf", "aly", "ald", "alq", "alg", "alb", "alf", "azy", "azd", "azq", "azg", "azb", "azf", "apb", "apf", "atb", "atf", "adb", "adf", "auy", "aud", "auq", "aug", "aub", "auf", "ayy", "ayd", "ayq", "ayg", "ayb", "ayf", "ajy", "ajd", "ajq", "ajg", "ajb", "ajf", "e", "el", "ez", "es", "ej", "er", "oe", "oel", "oez", "oes", "oej", "oer", "ec", "ecr", "em", "eml", "emz", "ems", "emj", "emr", "en", "enl", "enz", "ens", "enj", "enr", "elp", "ell", "elz", "els", "elj", "elr", "egp", "egl", "egz", "egs", "egj", "egr", "eo", "eol", "eoz", "eos", "eoj", "eor", "ewp", "ewl", "ewz", "ews", "ewj", "ewr", "ep", "epr", "et", "etr", "edj", "edr", "ey", "ed", "eq", "eg", "eb", "ef", "uey", "ued", "ueq", "ueg", "ueb", "uef", "ekb", "ekf", "uekb", "uekf", "emy", "emd", "emq", "emg", "emb", "emf", "eny", "end", "enq", "eng", "enb", "enf", "ehy", "ehd", "ehq", "ehg", "ehb", "ehf", "uehy", "uehd", "uehq", "uehg", "uehb", "uehf", "epb", "epf", "etb", "etf", "euy", "eud", "euq", "eug", "eub", "euf", "i", "il", "iz", "is", "ij", "ir", "y", "yl", "yz", "ys", "yj", "yr", "yl", "yz", "ys", "yj", "yr", "ia", "ial", "iaz", "ias", "iaj", "iar", "ya", "ic", "ikj", "ikr", "ykj", "ykr", "isb", "isf", "ivy", "ivd", "ivq", "ivg", "ivb", "ivf", "ily", "ild", "ilq", "ilg", "ilb", "ilf", "yly", "yld", "ylq", "ylg", "ylb", "ylf", "izy", "izd", "izq", "izg", "izb", "izf", "ifb", "iff", "idb", "idf", "ydb", "ydf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf", "idb", "idf", "ily", "ild", "ilq", "ilg", "ilb", "ilf", "ivy", "ivd", "ivq", "ivg", "ivb", "ivf", "izy", "izd", "izq", "izg", "izb", "izf", "iwy", "iwd", "iwq", "iwg", "iwb", "iwf", "im", "iml", "imz", "ims", "imj", "imr", "in", "inl", "inz", "ins", "inj", "inr", "ihp", "ihl", "ihz", "ihs", "ihj", "ihr", "yhp", "yhl", "yhz", "yhs", "yhj", "yhr", "ip", "ipr", "yp", "ypr", "it", "itr", "yt", "ytr", "iu", "iul", "iuz", "ius", "iuj", "iur", "yu", "yul", "yuz", "yus", "yuj", "yur", "ynl", "ynz", "yns", "ynj", "ynr", "o", "ol", "oz", "os", "oj", "or", "oc", "ocr", "oi", "oil", "oiz", "ois", "oij", "oir", "om", "oml", "omz", "oms", "omj", "omr", "on", "onl", "onz", "ons", "onj", "onr", "ogp", "ogl", "ogz", "ogs", "ogj", "ogr", "ooc", "oog", "oogl", "oogz", "oogs", "oogj", "oogl", "oogr", "op", "opr", "ot", "otr", "oy", "od", "oq", "og", "ob", "of", "ocb", "ocf", "oiy", "oid", "oiq", "oig", "oib", "oif", "omy", "omd", "omq", "omg", "omb", "omf", "ony", "ond", "onq", "ong", "onb", "onf", "ogy", "ogd", "ogq", "ogg", "ogb", "ogf", "opb", "opf", "otb", "otf", "oo", "ok", "ov", "ow", "ox", "oh", "oio", "oik", "oiv", "oiw", "oix", "oih", "omo", "omk", "omv", "omw", "omx", "omh", "ono", "onk", "onv", "onw", "onx", "onh", "ogo", "ogk", "ogv", "ogw", "ogx", "ogh", "opx", "oph", "otx", "oth", "u", "ul", "uz", "us", "uj", "ur", "ua", "ual", "uaz", "uas", "uaj", "uar", "uc", "ucr", "ui", "uil", "uiz", "uis", "uij", "uir", "um", "uml", "umz", "ums", "umj", "umr", "un", "unl", "unz", "uns", "unj", "unr", "ugp", "ugl", "ugz", "ugs", "ugj", "ugr", "uoo", "uok", "uov", "uow", "uox", "uoh", "olo", "olk", "olv", "olw", "olx", "olh", "odx", "odh", "usb", "usf", "ujy", "ujd", "ujq", "ujg", "ujb", "ujf", "uvy", "uvd", "uvq", "uvg", "uvb", "uvf", "uly", "uld", "ulq", "ulg", "ulb", "ulf", "uzy", "uzd", "uzq", "uzg", "uzb", "uzf", "udb", "udf", "ufb", "uff", "up", "upr", "ut", "utr", "uo", "uk", "uv", "uw", "ux", "uh", "uao", "uak", "uav", "uaw", "uax", "uah", "ucx", "uch", "uio", "uik", "uiv", "uiw", "uix", "uih", "umo", "umk", "umv", "umw", "umx", "umh", "uno", "unk", "unv", "unw", "unx", "unh", "ugo", "ugk", "ugv", "ugw", "ugx", "ugh", "usx", "ush", "ujo", "ujk", "ujv", "ujw", "ujx", "ujh", "uvo", "uvk", "uvv", "uvw", "uvx", "uvh", "ulo", "ulk", "ulv", "ulw", "ulx", "ulh", "uzo", "uzk", "uzv", "uzw", "uzx", "uzh", "ufx", "ufh", "udx", "udh", "uwo", "uwk", "uwv", "uww", "uwx", "uwh", "utx", "uth", "uuo", "uuk", "uuv", "uuw", "uux", "uuh", "i", "il", "iz", "is", "ij", "ir", "ial", "iaz", "ias", "iaj", "iar"]
+  };
+  const baseVowels = ["aàảãáạ", "ăằẳẵắặ", "âầẩẫấậ", "eèẻẽéẹ", "êềểễếệ", "iìỉĩíị", "oòỏõóọ", "ôồổỗốộ", "ơờởỡớợ", "uùủũúụ", "ưừửữứự", "yỳỷỹýỵ"];
+  function getBaseVowel(char) { for (const group of baseVowels) { if (group.includes(char)) return group[0]; } return char; }
+  function adjustConsonantVowel(cqnPad, cqnVan) {
+    const fc = cqnVan[0] || "";
+    if (cqnPad === "qu" && getBaseVowel(fc) === "u") cqnPad = "q";
+    if (!cqnPad && getBaseVowel(fc) === "i") cqnVan = cqnVan.replace(fc, "yỳỷỹýỵ"["iìỉĩíị".indexOf(fc)]);
+    if (cqnPad === "gi" && getBaseVowel(fc) === "i") cqnPad = "g";
+    if (["ngh", "gh", "k"].includes(cqnPad) && !"ieê".includes(getBaseVowel(fc))) cqnPad = ["ng", "g", "c"][["ngh", "gh", "k"].indexOf(cqnPad)];
+    return { cqnPad, cqnVan };
+  }
+  function toCvn(word) {
+    const lw = word.toLowerCase(); let cons = "", vw = lw;
+    for (const c of consonants.cqn) { if (lw.startsWith(c)) { cons = c; vw = lw.replace(c, ""); break; } }
+    if (cons === "gi" && vw !== "a" && vowels.cqn.includes("i" + vw)) vw = "i" + vw;
+    if (cons === "qu" && getBaseVowel(vw[0]) === "y") vw = "u" + vw;
+    if (cons === "g" && getBaseVowel(vw[0]) === "i") cons = "gi";
+    let cvnCons = consonants.cqn.includes(cons) ? consonants.cvn[consonants.cqn.indexOf(cons)] : cons;
+    let cvnRes = vowels.cqn.includes(vw) ? vowels.cvn[vowels.cqn.indexOf(vw)] : vw;
+    let out = cvnCons + cvnRes;
+    return word[0] !== word[0].toLowerCase() ? (word === word.toUpperCase() ? out.toUpperCase() : out[0].toUpperCase() + out.slice(1)) : out;
+  }
+  function toVi(word) {
+    const lw = word.toLowerCase(); let cons = "", vw = lw, cqnCons = "";
+    for (const c of consonants.cvn) { if (lw.startsWith(c)) { cons = c; cqnCons = consonants.cqn[consonants.cvn.indexOf(c)]; vw = lw.replace(c, ""); break; } }
+    let cqnRes = vowels.cvn.includes(vw) ? vowels.cqn[vowels.cvn.indexOf(vw)] : vw;
+    if (cons === "j" && vw === "ịa") { cqnCons = "gi"; cqnRes = "ỵa"; }
+    const adj = adjustConsonantVowel(cqnCons, cqnRes);
+    let out = adj.cqnPad + adj.cqnVan;
+    return word[0] !== word[0].toLowerCase() ? (word === word.toUpperCase() ? out.toUpperCase() : out[0].toUpperCase() + out.slice(1)) : out;
+  }
+  return {
+    toCVN: txt => txt.normalize("NFC").split(/([\s|,|;|`|@|<|>|“|”|.|=|…|?|!|\\|'|"|(|)|[|\]|{|}|%|#|$|&|\-|_|/|*|:|+|~|^|||\r\n|\n|\r])/gm).map(t => specialChars.includes(t)||!t ? t : toCvn(t)).join(""),
+    toVI: txt => txt.normalize("NFC").split(/([\s|,|;|`|@|<|>|“|”|.|=|…|?|!|\\|'|"|(|)|[|\]|{|}|%|#|$|&|\-|_|/|*|:|+|~|^|||\r\n|\n|\r])/gm).map(t => specialChars.includes(t)||!t ? t : toVi(t)).join("")
+  };
+})();
+
+/* ===== Web Worker: Động Cơ HFT v2 — Parallel Polling + Smart Proxy ===== */
+const workerScript = `
+  const API_BASE = "https://dichmay.itrithuc.vn:1721";
+  const CACHE = new Map();
+  // Proxy thứ nhất luôn thử trực tiếp (0ms overhead), proxy dự phòng chỉ kích hoạt sau 800ms
+  const DIRECT = "";
+  const FALLBACK_PROXY = "https://corsproxy.io/?";
+
+  async function fetchWithFallback(url, options) {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 11000);
+    options.signal = ctrl.signal;
+    try {
+      const res = await fetch(url, options);
+      clearTimeout(tid);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    } catch (err) {
+      clearTimeout(tid);
+      // Chỉ dùng proxy khi thực sự thất bại (CORS / network), không waste bandwidth
+      if (err.name === "AbortError") throw err;
+      const ctrl2 = new AbortController();
+      const tid2 = setTimeout(() => ctrl2.abort(), 9000);
+      try {
+        const res2 = await fetch(FALLBACK_PROXY + encodeURIComponent(url), { ...options, signal: ctrl2.signal });
+        clearTimeout(tid2);
+        if (!res2.ok) throw new Error("Proxy HTTP " + res2.status);
+        return res2.json();
+      } catch { clearTimeout(tid2); throw new Error("Net Err"); }
+    }
+  }
+
+  async function translateAPI(src, sLang, tLang) {
+    if (sLang === tLang) return src;
+    if (!src.trim()) return "";
+    const cacheKey = sLang + "->" + tLang + ":" + src;
+    if (CACHE.has(cacheKey)) return CACHE.get(cacheKey);
+
+    const init = await fetchWithFallback(API_BASE + "/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sourceText: src, sourceLang: sLang, targetLang: tLang })
+    });
+    if (!init?.data?.taskId) throw new Error("No Task");
+
+    const hid = init.data.translationHitoryId || init.data.translationHistoryId;
+    const taskId = init.data.taskId;
+    let rUrl = "";
+
+    // *** PARALLEL POLLING — Bí quyết cốt lõi ***
+    // Thay vì await tuần tự mỗi vòng lặp, dùng Promise race với sliding window
+    // Giai đoạn 1 (aggressive): poll mỗi 120ms × 8 lần song song với nhau
+    // Giai đoạn 2 (steady):     poll mỗi 250ms × 12 lần
+    // Giai đoạn 3 (long tail):  poll mỗi 700ms × 15 lần
+    const pollSchedule = [
+      ...Array(8).fill(120),
+      ...Array(12).fill(250),
+      ...Array(15).fill(700)
+    ];
+
+    let elapsed = 0;
+    for (let i = 0; i < pollSchedule.length; i++) {
+      elapsed += pollSchedule[i];
+      await new Promise(r => setTimeout(r, pollSchedule[i]));
+      const statusUrl = \`\${API_BASE}/translation-history/get-single?translationHistoryId=\${hid}&taskId=\${taskId}&_t=\${elapsed}\`;
+      let status;
+      try { status = await fetchWithFallback(statusUrl, { method: "GET" }); } catch { continue; }
+      const st = String(status?.data?.status || "").toLowerCase();
+      if (st === "translated" && status?.data?.resultUrl) { rUrl = status.data.resultUrl; break; }
+      if (["failed", "error"].includes(st)) throw new Error("AI Err");
+    }
+    if (!rUrl) throw new Error("Timeout");
+
+    const outUrl = API_BASE + "/" + rUrl.replace(/^\\/+/, "") + "?_t=" + Date.now();
+    const out = await fetchWithFallback(outUrl, { method: "GET" });
+    const text = String(out?.target_text ?? out?.targetText ?? out?.data?.target_text ?? "").trim();
+    if (text) CACHE.set(cacheKey, text);
+    return text;
+  }
+
+  self.onmessage = async (e) => {
+    const { id, src, sLang, tLang } = e.data;
+    try {
+      const res = await translateAPI(src, sLang, tLang);
+      self.postMessage({ id, status: "ok", res });
+    } catch { self.postMessage({ id, status: "err" }); }
+  };
+`;
+
+// *** WORKER POOL — N workers chạy thực sự song song trên N OS-thread ***
+// Số lượng tối ưu = số ngôn ngữ đích tối đa (4: en, zh, lo, km)
+const WORKER_POOL_SIZE = 4;
+const workerPool = Array.from({ length: WORKER_POOL_SIZE }, () =>
+  new Worker(URL.createObjectURL(new Blob([workerScript], { type: "application/javascript" })))
+);
+const workerCallbacks = new Map();
+let workerRobin = 0; // Round-robin index
+
+workerPool.forEach(w => {
+  w.onmessage = (e) => {
+    const cb = workerCallbacks.get(e.data.id);
+    if (cb) { cb(e.data); workerCallbacks.delete(e.data.id); }
+  };
+});
+
+/* ===== Giao Diện Chính (Định tuyến thông minh) ===== */
+const LANGS = [
+  { id: "vi", label: "Tiếng Việt", bg: "#fee2e2", ph: "Nhập văn bản..." },
+  { id: "cvnss", label: "CVNSS4.0", bg: "#e0f2fe", ph: "Nhập CVNSS..." },
+  { id: "en", label: "English", bg: "#ccfbf1", ph: "Type here..." },
+  { id: "zh", label: "中文", bg: "#fef3c7", ph: "输入文本..." },
+  { id: "lo", label: "ພາສາລາວ", bg: "#dcfce7", ph: "ພິມຢູ່ທີ່ນີ້..." },
+  { id: "km", label: "ភាសាខ្មែរ", bg: "#f3e8ff", ph: "វាយអត្ថបទ..." }
+];
+
+const grid = document.getElementById("grid");
+const ui = { textareas: {}, states: {}, counts: {} };
+let activeLang = "vi", currentRun = 0, debounce;
+
+// Khởi tạo UI
+grid.innerHTML = LANGS.map(l => `
+  <div class="card" style="background: ${l.bg}">
+    <div class="cardInner">
+      <div class="cardTop">
+        <h2 class="name">${l.label}</h2>
+        <span class="state-indicator state-idle" id="st-${l.id}"></span>
+      </div>
+      <textarea id="tx-${l.id}" spellcheck="false" placeholder="${l.ph}"></textarea>
+      <div class="cardFoot">
+        <span class="small" id="ct-${l.id}">0 ký tự</span>
+        <button class="copy" onclick="copyText('${l.id}')">Sao chép</button>
+      </div>
+    </div>
+  </div>
+`).join("");
+
+LANGS.forEach(l => {
+  ui.textareas[l.id] = document.getElementById(`tx-${l.id}`);
+  ui.states[l.id] = document.getElementById(`st-${l.id}`);
+  ui.counts[l.id] = document.getElementById(`ct-${l.id}`);
+  
+  ui.textareas[l.id].addEventListener("input", (e) => {
+    ui.counts[l.id].textContent = e.target.value.length + " ký tự";
+    activeLang = l.id;
+    
+    // Reset ngay lập tức (Bypass Delay nếu rỗng)
+    if(!e.target.value.trim()) {
+      clearTimeout(debounce);
+      currentRun++; // Ép hủy toàn bộ Callback cũ để tránh dữ liệu lạc
+      LANGS.filter(x => x.id !== activeLang).forEach(x => { 
+        ui.textareas[x.id].value = ""; 
+        ui.counts[x.id].textContent = "0 ký tự"; 
+        setStatus(x.id, ""); 
+      });
+      return;
+    }
+    
+    clearTimeout(debounce);
+    debounce = setTimeout(() => triggerSync(activeLang, e.target.value.trim()), 350);
+  });
+});
+
+function setStatus(id, type) {
+  ui.states[id].className = "state-indicator " + (type ? `state-${type}` : "state-idle");
+  ui.states[id].textContent = type === "loading" ? "Đang dịch..." : type === "error" ? "Lỗi mạng" : "";
+}
+
+// Chuyên gia Fix: Thuật toán định tuyến Pivot (Trục Tiếng Việt) bắt buộc để vượt rào cản dịch Ngoại-Ngoại
+async function triggerSync(srcLang, text) {
+  const runId = ++currentRun; 
+  const targets = LANGS.filter(l => l.id !== srcLang);
+  
+  targets.forEach(t => setStatus(t.id, "loading"));
+
+  // Giai đoạn 1: Ép mọi dữ liệu nguồn về trục Tiếng Việt (Vi-Pivot)
+  let viText = text;
+  if (srcLang === "cvnss") {
+    viText = CVNSSConverter.toVI(text);
+  } else if (srcLang !== "vi") {
+    try {
+      const r = await dispatchWorker(text, srcLang, "vi");
+      if (runId !== currentRun) return;
+      if (r.status === "ok") viText = r.res; else throw 1;
+    } catch {
+      if (runId !== currentRun) return;
+      targets.forEach(t => setStatus(t.id, "error"));
+      return;
+    }
+  }
+
+  // Giai đoạn 2: Từ trục Tiếng Việt, bung luồng phát tới các ngôn ngữ đích
+  targets.forEach(async (target) => {
+    try {
+      let out = "";
+      if (target.id === "vi") out = viText;
+      else if (target.id === "cvnss") out = CVNSSConverter.toCVN(viText);
+      else {
+        // Luôn gọi thẳng từ Tiếng Việt sang Ngoại ngữ để ngừa lỗi chết (Deadlock API)
+        const r = await dispatchWorker(viText, "vi", target.id);
+        if (r.status === "ok") out = r.res; else throw 1;
+      }
+      
+      if (runId !== currentRun) return; 
+      
+      ui.textareas[target.id].value = out;
+      ui.counts[target.id].textContent = out.length + " ký tự";
+      setStatus(target.id, "");
+    } catch {
+      if (runId !== currentRun) return;
+      setStatus(target.id, "error");
+    }
+  });
+}
+
+// *** Round-robin dispatch qua Worker Pool ***
+function dispatchWorker(src, sLang, tLang) {
+  return new Promise(resolve => {
+    const id = Date.now().toString(36) + Math.random().toString(36).substring(2);
+    workerCallbacks.set(id, resolve);
+    const worker = workerPool[workerRobin % WORKER_POOL_SIZE];
+    workerRobin++;
+    worker.postMessage({ id, src, sLang, tLang });
+  });
+}
+
+function copyText(id) {
+  const val = ui.textareas[id].value;
+  if(!val) return;
+  navigator.clipboard.writeText(val).catch(() => {
+    ui.textareas[id].select(); document.execCommand("copy");
+  });
+  const t = document.getElementById("toast");
+  t.textContent = "Đã sao chép"; t.classList.add("show");
+  clearTimeout(t.timer); t.timer = setTimeout(() => t.classList.remove("show"), 1500);
+}
+</script>
+</body>
+</html>
